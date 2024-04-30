@@ -38,17 +38,17 @@ app.get('/youtuber/:id', (req, res) => {
     }
 })
 
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
-app.use(express.json()); // req로 받은 데이터를 json으로 변환
-app.post('/post-test', (req, res) => {
-    // res.send('Got a POST request');
+app.use(express.json());
+app.post('/youtuber/post', (req, res) => { 
     console.log(req.body)
-    res.send(req.body.message)
-});
+    let {channelTitle, subscriber, video} = req.body;
+    let id = db.size + 1;
+
+    db.set(id, {channelTitle, subscriber, video}); // ES6 문법의 객체 리터럴 속성 이름 축약
+    res.json(db.get(id))
+    console.log(db)
+})
+
 
 app.listen(port, () => {
     console.log(`youtuber app listening at http://localhost:${port}`)
