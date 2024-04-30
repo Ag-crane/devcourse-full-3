@@ -1,7 +1,7 @@
 const { subscribe } = require('diagnostics_channel');
 const express = require('express');
 const app = express();
-const post = 3000;
+const port = 3000;
 
 // 유투버 데이터 셋팅
 const youtuber1 = {
@@ -21,7 +21,7 @@ const youtuber3 = {
 }
 
 // Map을 이용한 db 셋팅
-let db = Map();
+let db = new Map();
 db.set(1, youtuber1);
 db.set(2, youtuber2);
 db.set(3, youtuber3);
