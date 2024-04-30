@@ -27,9 +27,9 @@ db.set(2, youtuber2);
 db.set(3, youtuber3);
 
 // REST API 설계
-app.get('/youtuber', (req, res) => {
-    let {id} = parseInt(req.params)
-
+app.get('/youtuber/:id', (req, res) => {
+    let {id} = req.params
+    id = parseInt(id)
     const youtuber = db.get(id);
     if (!youtuber) {
         res.json({error: 'Youtuber not found'})
