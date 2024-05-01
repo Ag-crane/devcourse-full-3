@@ -22,9 +22,10 @@ const youtuber3 = {
 
 // Map을 이용한 db 셋팅
 let db = new Map();
-db.set(1, youtuber1);
-db.set(2, youtuber2);
-db.set(3, youtuber3);
+var id = 1;
+db.set(id++, youtuber1);
+db.set(id++, youtuber2);
+db.set(id++, youtuber3);
 
 // REST API 설계
 app.get('/youtuber/:id', (req, res) => {
@@ -42,11 +43,12 @@ app.use(express.json());
 app.post('/youtuber/post', (req, res) => { 
     console.log(req.body)
     let {channelTitle, subscriber, video} = req.body;
-    let id = db.size + 1;
 
-    db.set(id, {channelTitle, subscriber, video}); // ES6 문법의 객체 리터럴 속성 이름 축약
-    res.json(db.get(id))
-    console.log(db)
+    db.set(id++, {channelTitle, subscriber, video}); // ES6 문법의 객체 리터럴 속성 이름 축약
+    res.json({
+        message: 'Youtuber added successfully',
+        youtuber: db.get(id-1)
+    })
 })
 
 
