@@ -28,7 +28,12 @@ db.set(id++, youtuber2);
 db.set(id++, youtuber3);
 
 // REST API 설계
-app.get('/youtuber/:id', (req, res) => {
+app.get('/youtubers', (req, res) => {
+    const youtubers = Array.from(db.values());
+    res.json(youtubers);
+})
+
+app.get('/youtubers/:id', (req, res) => {
     let {id} = req.params
     id = parseInt(id)
     const youtuber = db.get(id);
@@ -40,7 +45,7 @@ app.get('/youtuber/:id', (req, res) => {
 })
 
 app.use(express.json());
-app.post('/youtuber/post', (req, res) => { 
+app.post('/youtubers/post', (req, res) => { 
     console.log(req.body)
     let {channelTitle, subscriber, video} = req.body;
 
