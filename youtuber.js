@@ -56,6 +56,19 @@ app.post('/youtubers/post', (req, res) => {
     })
 })
 
+// url은 겹쳐도 method가 다르면 가능
+app.delete('/youtubers/:id', (req, res) => {
+    let {id} = req.params
+    id = parseInt(id)
+    const youtuber = db.get(id);
+    
+    if (!youtuber) {
+        res.json({error: 'Youtuber not found'})
+    }else {
+        db.delete(id);
+        res.json({message: 'Youtuber deleted successfully'})
+    }
+})
 
 app.listen(port, () => {
     console.log(`youtuber app listening at http://localhost:${port}`)
