@@ -29,7 +29,12 @@ db.set(id++, youtuber3);
 
 // REST API 설계
 app.get('/youtubers', (req, res) => {
-    const youtubers = Array.from(db.values());
+    // forEach문 활용하기
+    const youtubers = {};
+    db.forEach((value, key) => {
+        youtubers[key] = value;
+    })
+    // const youtubers = Array.from(db.values());
     res.json(youtubers);
 })
 
