@@ -88,6 +88,25 @@ app.delete('/youtubers', (req, res) => {
     res.json({message: msg})
 })
 
+// 수정 (개별)
+app.put('/youtubers/:id', (req, res) => {
+    let {id} = req.params
+    id = parseInt(id)
+    const youtuber = db.get(id);
+    if (!youtuber) {
+        res.json({error: 'Youtuber not found'})
+    }else{
+        const oldTitle = youtuber.channelTitle
+        const newTitle = req.body.channelTitle
+        youtuber.channelTitle = newTitle
+        db.set(id, youtuber)
+        res.json({
+            "message":`${oldTitle} -> ${newTitle}`,
+            "after":db.get(id)
+        })
+    }
+})
+
 app.listen(port, () => {
     console.log(`youtuber app listening at http://localhost:${port}`)
 })
