@@ -75,6 +75,19 @@ app.delete('/youtubers/:id', (req, res) => {
     }
 })
 
+// 전체 삭제
+app.delete('/youtubers', (req, res) => {
+    var msg = ''
+    
+    if (db.size === 0) { // db에 값이 없으면
+        msg = 'No youtubers to delete'
+    }else { // 있으면
+        db.clear()
+        msg = 'All youtubers deleted successfully'
+    }
+    res.json({message: msg})
+})
+
 app.listen(port, () => {
     console.log(`youtuber app listening at http://localhost:${port}`)
 })
