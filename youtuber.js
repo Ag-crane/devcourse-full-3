@@ -42,10 +42,10 @@ app.get('/youtubers/:id', (req, res) => {
     let {id} = req.params
     id = parseInt(id)
     const youtuber = db.get(id);
-    if (!youtuber) {
-        res.json({error: 'Youtuber not found'})
-    }else {
+    if (youtuber) {
         res.json(youtuber)
+    }else {
+        res.json({error: 'Youtuber not found'})
     }
 })
 
@@ -67,23 +67,22 @@ app.delete('/youtubers/:id', (req, res) => {
     id = parseInt(id)
     const youtuber = db.get(id);
     
-    if (!youtuber) {
-        res.json({error: 'Youtuber not found'})
-    }else {
+    if (youtuber) {
         db.delete(id);
         res.json({message: 'Youtuber deleted successfully'})
+    }else {
+        res.json({error: 'Youtuber not found'})
     }
 })
 
 // 전체 삭제
 app.delete('/youtubers', (req, res) => {
     var msg = ''
-    
-    if (db.size === 0) { // db에 값이 없으면
-        msg = 'No youtubers to delete'
-    }else { // 있으면
+    if (db.size) { // db에 값이 없으면
         db.clear()
         msg = 'All youtubers deleted successfully'
+    }else { // 있으면
+        msg = 'No youtubers to delete'
     }
     res.json({message: msg})
 })
@@ -93,9 +92,7 @@ app.put('/youtubers/:id', (req, res) => {
     let {id} = req.params
     id = parseInt(id)
     const youtuber = db.get(id);
-    if (!youtuber) {
-        res.json({error: 'Youtuber not found'})
-    }else{
+    if (youtuber) {
         const oldTitle = youtuber.channelTitle
         const newTitle = req.body.channelTitle
         youtuber.channelTitle = newTitle
@@ -104,6 +101,8 @@ app.put('/youtubers/:id', (req, res) => {
             "message":`${oldTitle} -> ${newTitle}`,
             "after":db.get(id)
         })
+    }else{
+        res.json({error: 'Youtuber not found'})
     }
 })
 
