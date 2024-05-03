@@ -1,4 +1,3 @@
-const { subscribe } = require('diagnostics_channel');
 const express = require('express');
 const app = express();
 const port = 3000;
