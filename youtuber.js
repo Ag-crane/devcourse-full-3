@@ -30,11 +30,17 @@ db.set(id++, youtuber3);
 app.get('/youtubers', (req, res) => {
     // forEach문 활용하기
     const youtubers = {};
-    db.forEach((value, key) => {
-        youtubers[key] = value;
-    })
-    // const youtubers = Array.from(db.values());
-    res.json(youtubers);
+
+    if (db.size) {
+        db.forEach((value, key) => {
+            youtubers[key] = value;
+        })
+        // const youtubers = Array.from(db.values());
+        res.json(youtubers);
+    }else {
+        res.status(404).json({message: 'No youtubers found'});
+    }
+
 })
 
 app.get('/youtubers/:id', (req, res) => {
@@ -44,20 +50,22 @@ app.get('/youtubers/:id', (req, res) => {
     if (youtuber) {
         res.json(youtuber)
     }else {
-        res.json({error: 'Youtuber not found'})
+        res.status(404).json({error: 'Youtuber not found'})
     }
 })
 
 app.use(express.json());
 app.post('/youtubers/post', (req, res) => { 
-    console.log(req.body)
-    let {channelTitle, subscriber, video} = req.body;
-
-    db.set(id++, {channelTitle, subscriber, video}); // ES6 문법의 객체 리터럴 속성 이름 축약
-    res.json({
-        message: 'Youtuber added successfully',
-        youtuber: db.get(id-1)
-    })
+    let {channelTitle} = req.body;
+    if (channelTitle){
+        db.set(id++, {channelTitle: channelTitle, subscriber:0, video:0});
+        res.status(201).json({ // '등록' 성공은 '201'
+            message: 'Youtuber added successfully',
+            youtuber: db.get(id-1)
+        })
+    }else {
+        res.status(400).json({error: 'Invalid input'}) // '잘못된 요청'은 '400'
+    }
 })
 
 // url은 겹쳐도 method가 다르면 가능
@@ -70,20 +78,23 @@ app.delete('/youtubers/:id', (req, res) => {
         db.delete(id);
         res.json({message: 'Youtuber deleted successfully'})
     }else {
-        res.json({error: 'Youtuber not found'})
+        res.status(404).json({error: 'Youtuber not found'})
     }
 })
 
 // 전체 삭제
 app.delete('/youtubers', (req, res) => {
-    var msg = ''
+    let msg = ''
+    let status = ''
     if (db.size) { // db에 값이 없으면
         db.clear()
         msg = 'All youtubers deleted successfully'
+        status = 200
     }else { // 있으면
         msg = 'No youtubers to delete'
+        status = 404
     }
-    res.json({message: msg})
+    res.status(status).json({message: msg})
 })
 
 // 수정 (개별)
@@ -101,7 +112,7 @@ app.put('/youtubers/:id', (req, res) => {
             "after":db.get(id)
         })
     }else{
-        res.json({error: 'Youtuber not found'})
+        res.status(404).json({error: 'Youtuber not found'})
     }
 })
 
