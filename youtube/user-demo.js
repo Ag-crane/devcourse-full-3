@@ -32,30 +32,30 @@ app.post('/register', (req, res) => {
     console.log(db)
 })
 
-// 회원 정보 조회
-app.get('/users/:id', (req, res) => {
-    let {id} = req.params;
-    id = parseInt(id)
-    const user = db.get(id)
-    if (user) {
-        res.json({
-            userId: user.userId,
-            name: user.name
-        });
-    }else {
-        res.status(404).json({message: 'User not found'});
-    }
-})
 
-// 회원 탈퇴
-app.delete('/users/:id', (req, res) => {
-    let {id} = req.params;
-    id = parseInt(id)
-    const user = db.get(id)
-    if (user) {
-        db.delete(id)
-        res.json({message: `User ${user.name} deleted`});
-    }else {
-        res.status(404).json({message: 'Delete failed'});
-    }
-})
+// route 메소드 사용해서 중복되는 URL 합치기
+app.route('/users/:id')
+    .get((req, res) => {    // 회원 정보 조회
+        let {id} = req.params;
+        id = parseInt(id)
+        const user = db.get(id)
+        if (user) {
+            res.json({
+                userId: user.userId,
+                name: user.name
+            });
+        }else {
+            res.status(404).json({message: 'User not found'});
+        }
+    })
+    .delete((req, res) => {    // 회원 탈퇴
+        let {id} = req.params;
+        id = parseInt(id)
+        const user = db.get(id)
+        if (user) {
+            db.delete(id)
+            res.json({message: `User ${user.name} deleted`});
+        }else {
+            res.status(404).json({message: 'Delete failed'});
+        }
+    })
