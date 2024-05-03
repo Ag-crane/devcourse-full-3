@@ -12,11 +12,22 @@ let db = new Map()
 app.post('/login', (req, res) => {
     const {userId, password} = req.body;
     
-    if (userId === 'testId' && password === 'testPw') {
-        res.status(200).json({message: 'Login success'});
-    }else {
-        res.status(401).json({message: 'Login failed'});
+    const user = [...db.values()].find(user => user.userId === userId)
+    if (user){
+        console.log("User found")
+        if (user.password === password){
+            res.status(200).json({message: 'Login success'});
+        }else{
+            res.status(401).json({message: 'incorrect password'});
+        }
+    }else{
+        res.status(401).json({message: 'User not found'});
     }
+    // if (userId === 'testId' && password === 'testPw') {
+    //     res.status(200).json({message: 'Login success'});
+    // }else {
+    //     res.status(401).json({message: 'Login failed'});
+    // }
 })
 
 // 회원 가입
@@ -29,7 +40,6 @@ app.post('/register', (req, res) => {
     }else {
         res.status(400).json({message: 'Register failed'});
     }
-    console.log(db)
 })
 
 
