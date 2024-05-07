@@ -1,10 +1,13 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+
 app.use(express.json());
+
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 })
+
 let id = 1
 let db = new Map()
 
@@ -23,11 +26,6 @@ app.post('/login', (req, res) => {
     }else{
         res.status(401).json({message: 'User not found'});
     }
-    // if (userId === 'testId' && password === 'testPw') {
-    //     res.status(200).json({message: 'Login success'});
-    // }else {
-    //     res.status(401).json({message: 'Login failed'});
-    // }
 })
 
 // 회원 가입
@@ -41,7 +39,6 @@ app.post('/register', (req, res) => {
         res.status(400).json({message: 'Register failed'});
     }
 })
-
 
 // route 메소드 사용해서 중복되는 URL 합치기
 app.route('/users/:id')
