@@ -6,3 +6,6 @@ app.listen(3000, () => {
 })
 app.use(express.json());
 
+const userRouter = require('./routes/user-demo');
+
+app.use("/", userRouter);

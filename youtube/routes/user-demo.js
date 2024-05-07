@@ -1,18 +1,13 @@
 const express = require('express');
-const app = express();
-const port = 3000;
+const router = express.Router();
 
-app.use(express.json());
-
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-})
+router.use(express.json());
 
 let id = 1
 let db = new Map()
 
 // 로그인
-app.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
     const {userId, password} = req.body;
     
     const user = [...db.values()].find(user => user.userId === userId)
@@ -29,7 +24,7 @@ app.post('/login', (req, res) => {
 })
 
 // 회원 가입
-app.post('/register', (req, res) => {
+router.post('/register', (req, res) => {
     const {userId, password, name} = req.body;
     
     if (userId && password) {
@@ -41,7 +36,7 @@ app.post('/register', (req, res) => {
 })
 
 // route 메소드 사용해서 중복되는 URL 합치기
-app.route('/users/:id')
+router.route('/users/:id')
     .get((req, res) => {    // 회원 정보 조회
         let {id} = req.params;
         id = parseInt(id)
@@ -66,3 +61,5 @@ app.route('/users/:id')
             res.status(404).json({message: 'Delete failed'});
         }
     })
+
+module.exports = router;
