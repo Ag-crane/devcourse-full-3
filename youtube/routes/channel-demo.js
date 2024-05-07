@@ -1,17 +1,12 @@
 const express = require('express');
-const app = express();
-const port = 3000;
+const router = express();
 
-app.use(express.json());
-
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-})
+router.use(express.json());
 
 let id = 1
 let db = new Map()
 
-app.route('/channels')
+router.route('/')
     .get((req, res) => { // 채널 전체 조회
         const channels = [...db.values()]
         if (channels.length === 0){
@@ -30,7 +25,7 @@ app.route('/channels')
         }
     })
 
-app.route('/channels/:id')
+router.route('/:id')
     .get((req, res) => { // 채널 개별 조회
         let {id} = req.params
         id = parseInt(id)
@@ -71,3 +66,5 @@ app.route('/channels/:id')
             res.status(400).send('id에 해당하는 채널이 없다')
         }
     })
+
+module.exports = router;
