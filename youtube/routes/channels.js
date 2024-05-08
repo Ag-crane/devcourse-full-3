@@ -8,20 +8,25 @@ let db = new Map()
 
 router.route('/')
     .get((req, res) => { // 채널 전체 조회
-        const channels = [...db.values()]
-        if (channels.length === 0){
-            res.status(404).send('채널이 없습니다')
+        const {userId} = req.body
+        if (userId){
+            const channels = [...db.values()].filter(channel => channel.userId === userId)
+            if (channels.length){
+                res.json(channels)
+            }else{
+                res.status(404).send('해당 유저의 채널이 없습니다')                
+            }
         }else{
-            res.json(channels)
+            res.status(400).send('로그인이 필요합니다')
         }
     })
     .post((req, res) => { // 채널 생성
-        const {channelTitle} = req.body
-        if (channelTitle){
-            db.set(id++,{channelTitle, subscriber:0, video:0})
-            res.status(201).send(`${channelTitle}님 응원합니다`)
+        const {userId, channelTitle} = req.body
+        if (userId && channelTitle){
+            db.set(id++,{userId, channelTitle, subscriber:0, video:0})
+            res.status(201).send(`${userId}님, ${channelTitle} 채널을 응원합니다`)
         }else{
-            res.status(400).send('채널명을 입력하세요')
+            res.status(400).send('잘못된 요청')
         }
     })
 
