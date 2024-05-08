@@ -6,8 +6,8 @@ app.listen(3000, () => {
 })
 app.use(express.json());
 
-const userRouter = require('./routes/user-demo');
-const channelRouter = require('./routes/channel-demo');
+const userRouter = require('./routes/users');
+const channelRouter = require('./routes/channels');
 
 app.use("/", userRouter);
 app.use("/channels", channelRouter);
