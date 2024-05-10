@@ -1,7 +1,16 @@
 const express = require('express');
 const router = express.Router();
-
 router.use(express.json());
+
+const conn = require('../mariaDB'); // db connection 객체. conn은 connection을 줄인 것
+
+conn.query('SELECT * FROM users', (err, results, fields) => {
+    if (err) throw err
+    // console.log(results) // results contains rows returned by server
+    // console.log(fields) // fields contains extra meta-data about the results
+    const {id, email, name, password, contact, created_at} = results[results.length - 1]
+    console.log(id, email, name, password, contact, created_at)
+});
 
 let db = new Map()
 

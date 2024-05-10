@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express();
-
 router.use(express.json());
+
+const conn = require('../mariaDB'); // db connection 객체. conn은 connection을 줄인 것
 
 let id = 1
 let db = new Map()
