@@ -4,14 +4,6 @@ router.use(express.json());
 
 const conn = require('../mariaDB'); // db connection 객체. conn은 connection을 줄인 것
 
-conn.query('SELECT * FROM users', (err, results, fields) => {
-    if (err) throw err
-    // console.log(results) // results contains rows returned by server
-    // console.log(fields) // fields contains extra meta-data about the results
-    const {id, email, name, password, contact, created_at} = results[results.length - 1]
-    console.log(id, email, name, password, contact, created_at)
-});
-
 let db = new Map()
 
 // 로그인
@@ -45,16 +37,15 @@ router.post('/register', (req, res) => {
 // route 메소드 사용해서 중복되는 URL 합치기
 router.route('/users')
     .get((req, res) => {    // 회원 정보 조회
-        const {userId} = req.body;
-        const user = db.get(userId)
-        if (user) {
-            res.json({
-                userId: user.userId,
-                name: user.name
-            });
-        }else {
-            res.status(404).json({message: 'User not found'});
-        }
+        const {email} = req.body;
+        conn.query(`SELECT * FROM users WHERE email = ?`, email, (err, result) => {
+            if (err) throw err
+            if (result.length) { 
+                res.send(result)
+            } else {
+                res.status(404).json({message: 'User not found'});
+            }
+        });
     })
     .delete((req, res) => {    // 회원 탈퇴
         const {userId} = req.body;
