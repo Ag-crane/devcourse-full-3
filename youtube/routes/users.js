@@ -8,18 +8,17 @@ let db = new Map()
 
 // 로그인
 router.post('/login', (req, res) => {
-    const {userId, password} = req.body;
+    const {email, password} = req.body;
     
-    const user = [...db.values()].find(user => user.userId === userId)
-    if (user){
-        if (user.password === password){
-            res.status(200).json({message: 'Login success'});
-        }else{
-            res.status(401).json({message: 'incorrect password'});
+    conn.query(`SELECT * FROM users WHERE email = ?`, email, (err, result) => {
+        if (err) throw err
+        console.log(result)
+        if (result.length && result[0].password === password) {
+            res.json({message: 'Login success'});
+        } else {
+            res.status(401).json({message: 'email or password is incorrect'});
         }
-    }else{
-        res.status(401).json({message: 'User not found'});
-    }
+    });
 })
 
 // 회원 가입
@@ -52,7 +51,7 @@ router.route('/users')
     })
     .delete((req, res) => {    // 회원 탈퇴
         const {email} = req.body;
-
+        console.log(email)
         conn.query(`DELETE FROM users WHERE email = ?`, email, (err, result) => {
             if (err) throw err
             console.log(result)
