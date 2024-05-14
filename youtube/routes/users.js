@@ -24,11 +24,14 @@ router.post('/login', (req, res) => {
 
 // 회원 가입
 router.post('/register', (req, res) => {
-    const {userId, password, name} = req.body;
+    const {email, name, password, contact} = req.body;
     
-    if (userId && password) {
-        db.set(userId, {userId, password, name})
-        res.json({message: `Welcome ${name}!`});
+    // email, name, password 모두 있으면
+    if (email && name && password) {
+        conn.query(`INSERT INTO users (email, name, password, contact) VALUES (?, ?, ?, ?)`, [email, name, password, contact], (err, result) => {
+            if (err) throw err
+            res.json({message: `Welcome ${name}!`});
+        });
     }else {
         res.status(400).json({message: 'Register failed'});
     }
@@ -48,14 +51,17 @@ router.route('/users')
         });
     })
     .delete((req, res) => {    // 회원 탈퇴
-        const {userId} = req.body;
-        const user = db.get(userId)
-        if (user) {
-            db.delete(id)
-            res.json({message: `User ${user.name} deleted`});
-        }else {
-            res.status(404).json({message: 'Delete failed'});
-        }
+        const {email} = req.body;
+
+        conn.query(`DELETE FROM users WHERE email = ?`, email, (err, result) => {
+            if (err) throw err
+            console.log(result)
+            if (result.affectedRows) {
+                res.json({message: 'User deleted'});
+            } else {
+                res.status(404).json({message: 'Delete failed'});
+            }
+        });
     })
 
 module.exports = router;
