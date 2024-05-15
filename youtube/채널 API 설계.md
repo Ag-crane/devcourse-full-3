@@ -1,11 +1,11 @@
 ## 채널 API 설계
 
 1. 채널 생성 : POST /channels
-    - req : body (userId, channelTitle)
+    - req : body (userId, name)
     - res : 201, '채널을 응원합니다' -> 채널 관리 페이지 이동
 
 2. 채널 개별 수정 : PUT /channels/:id
-    - req : URL (id), body (channelTitle, newTitle)
+    - req : URL (id), body (name, newName)
     - res : 200, '{기존 채널명} -> {수정 채널명} 수정 완료'
 
 3. 채널 개별 삭제 : DELETE /channels/:id
@@ -18,4 +18,4 @@
 
 5. 채널 개별 조회 : GET /channels/:id
     - req : URL (id)
-    - res : 채널 개별 데이터
+    - res : 200, 채널 개별 데이터
