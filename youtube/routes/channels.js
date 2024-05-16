@@ -5,12 +5,23 @@ const { param, body, validationResult } = require('express-validator');
 
 const conn = require('../mariaDB'); // db connection 객체. conn은 connection을 줄인 것
 
+const validate = (req, res, next) => {
+    const errors = validationResult(req)
+    if (errors.isEmpty()) {
+        return next()
+    }
+    return res.status(400).json(errors.array())
+}
+
 router.route('/')
     // 채널 전체 조회
     .get(
-        body('userId')
-            .notEmpty().withMessage('userId가 없습니다').bail()
-            .isInt().withMessage('userId는 숫자여야 합니다'),
+        [
+            body('userId')
+                .notEmpty().withMessage('userId가 없습니다').bail()
+                .isInt().withMessage('userId는 숫자여야 합니다'),
+            validate
+        ],
         (req, res) => {
             const { userId } = req.body
             const sql = `SELECT * FROM channels WHERE user_id = ?`
@@ -35,14 +46,10 @@ router.route('/')
                 .isInt().withMessage('userId는 숫자여야 합니다'),
             body('name')
                 .notEmpty().withMessage('name이 없습니다').bail()
-                .isString().withMessage('name은 문자여야 합니다')
+                .isString().withMessage('name은 문자여야 합니다'),
+            validate
         ],
         (req, res) => {
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) {
-                return res.status(400).json(errors.array())
-            }
-
             const { userId, name } = req.body
 
             const sql = `INSERT INTO channels (user_id, name) VALUES (?, ?)`
@@ -56,9 +63,12 @@ router.route('/')
 router.route('/:id')
     // 채널 개별 조회
     .get(
-        param('id')
-            .notEmpty().withMessage('id가 없습니다').bail()
-            .isInt().withMessage('id는 숫자여야 합니다'),
+        [
+            param('id')
+                .notEmpty().withMessage('id가 없습니다').bail()
+                .isInt().withMessage('id는 숫자여야 합니다'),
+            validate
+        ],
         (req, res) => {
             let { id } = req.params
             id = parseInt(id)
@@ -74,19 +84,17 @@ router.route('/:id')
         })
     // 채널 개별 삭제
     .delete(
-        param('id')
-            .notEmpty().withMessage('id가 없습니다').bail()
-            .isInt().withMessage('id는 숫자여야 합니다'),
+        [
+            param('id')
+                .notEmpty().withMessage('id가 없습니다').bail()
+                .isInt().withMessage('id는 숫자여야 합니다'),
+            validate
+        ],
         (req, res) => {
             let { id } = req.params
             id = parseInt(id)
+
             const sql = `DELETE FROM channels WHERE id = ?`
-
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) {
-                return res.status(400).json(errors.array())
-            }
-
             conn.query(sql, id, (err, result) => {
                 if (err) throw err
                 if (result.affectedRows) {
@@ -98,21 +106,19 @@ router.route('/:id')
         })
     // 채널 개별 수정
     .put(
-        param('id')
-            .notEmpty().withMessage('id가 없습니다').bail()
-            .isInt().withMessage('id는 숫자여야 합니다'),
-        body('newName')
-            .notEmpty().withMessage('새로운 채널명을 입력하세요').bail()
-            .isString().withMessage('name은 문자열이어야 합니다'),
+        [
+            param('id')
+                .notEmpty().withMessage('id가 없습니다').bail()
+                .isInt().withMessage('id는 숫자여야 합니다'),
+            body('newName')
+                .notEmpty().withMessage('새로운 채널명을 입력하세요').bail()
+                .isString().withMessage('name은 문자열이어야 합니다'),
+            validate
+        ],
         (req, res) => {
             let { id } = req.params
             id = parseInt(id)
             const { newName } = req.body
-
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) {
-                return res.status(400).json(errors.array())
-            }
 
             const sql = `UPDATE channels SET name = ? WHERE id = ?`
             const values = [newName, id]
