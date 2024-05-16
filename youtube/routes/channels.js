@@ -71,17 +71,22 @@ router.route('/:id')
     .put((req, res) => { // 채널 개별 수정
         let { id } = req.params
         id = parseInt(id)
-        const { newTitle } = req.body
-        if (!newTitle) {
-            res.status(400).send('새로운 채널명을 입력하세요')
-        }
-        const channel = db.get(id)
-        if (channel) {
-            db.set(id, { channelTitle: newTitle, subscriber: 0, video: 0 })
-            res.status(200).json({ message: `채널명이 ${channel.channelTitle}에서 ${newTitle}로 변경되었습니다` })
-        } else {
-            res.status(400).send('id에 해당하는 채널이 없다')
-        }
-    })
+            const { newName } = req.body
+
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json(errors.array())
+            }
+
+            const sql = `UPDATE channels SET name = ? WHERE id = ?`
+            const values = [newName, id]
+            conn.query(sql, values, (err, result) => {
+                if (err) throw err
+                if (result.affectedRows) {
+                    res.status(200).json({ message: `채널명이 ${newName}로 변경되었습니다` })
+                }
+                res.status(400).json({ message: 'Channel not found' })
+            })
+        })
 
 module.exports = router;
