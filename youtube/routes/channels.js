@@ -41,7 +41,7 @@ router.route('/:id')
         let { id } = req.params
         id = parseInt(id)
 
-        conn.query(`SELECT * FROM channels WHERE user_id = ?`, id, (err, result) => {
+        conn.query(`SELECT * FROM channels WHERE id = ?`, id, (err, result) => {
             if (err) throw err
             if (result.length) {
                 res.json(result)
