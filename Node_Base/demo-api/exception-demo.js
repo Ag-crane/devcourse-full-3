@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const dovenv = require('dotenv');
+dovenv.config({ path: '../.env' });
+const port = process.env.PORT
 
 const fruits = [
     {id: 1, name: 'banana', color: 'yellow'},
