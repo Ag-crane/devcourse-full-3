@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 router.use(express.json());
 const conn = require('../mariaDB'); // db connection 객체. conn은 connection을 줄인 것
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv').config();
 const { body, validationResult } = require('express-validator');
 
 const validate = (req, res, next) => {
@@ -31,7 +33,15 @@ router.post(
         conn.query(sql, email, (err, result) => {
             if (err) throw err
             if (result.length && result[0].password === password) {
-                res.json({ message: 'Login success' });
+                const token = jwt.sign(
+                    { email, name: result[0].name }, // 페이로드
+                    process.env.PRIVATE_KEY, // 비밀 키
+                    { expiresIn: '1h', issuer: 'youtube server' } // 유효 시간, 발급자
+                );
+                res.cookie('token', token, { httpOnly: true, secure: true })
+                res.json({
+                    message: 'Login success',
+                });
             } else {
                 res.status(401).json({ message: 'email or password is incorrect' });
             }
@@ -80,18 +90,18 @@ router.route('/users')
             validate
         ],
         (req, res) => {    // 회원 정보 조회
-        const { email } = req.body
+            const { email } = req.body
 
-        const sql = `SELECT * FROM users WHERE email = ?`
-        conn.query(sql, email, (err, result) => {
-            if (err) throw err
-            if (result.length) {
-                res.send(result)
-            } else {
-                res.status(404).json({ message: 'User not found' })
-            }
-        });
-    })
+            const sql = `SELECT * FROM users WHERE email = ?`
+            conn.query(sql, email, (err, result) => {
+                if (err) throw err
+                if (result.length) {
+                    res.send(result)
+                } else {
+                    res.status(404).json({ message: 'User not found' })
+                }
+            });
+        })
     .delete(
         [
             body('email')
@@ -100,17 +110,17 @@ router.route('/users')
             validate
         ],
         (req, res) => {    // 회원 탈퇴
-        const { email } = req.body
+            const { email } = req.body
 
-        const sql = `DELETE FROM users WHERE email = ?`
-        conn.query(sql, email, (err, result) => {
-            if (err) throw err
-            if (result.affectedRows) {
-                res.json({ message: 'User deleted' });
-            } else {
-                res.status(404).json({ message: 'Delete failed' });
-            }
-        });
-    })
+            const sql = `DELETE FROM users WHERE email = ?`
+            conn.query(sql, email, (err, result) => {
+                if (err) throw err
+                if (result.affectedRows) {
+                    res.json({ message: 'User deleted' });
+                } else {
+                    res.status(404).json({ message: 'Delete failed' });
+                }
+            });
+        })
 
 module.exports = router
