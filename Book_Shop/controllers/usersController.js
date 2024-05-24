@@ -1,5 +1,7 @@
 const conn = require('../mariaDB');
 const { StatusCodes } = require('http-status-codes');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const join = (req, res) => {
     const { email, name, password } = req.body;
@@ -40,4 +42,12 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { join, login };
+const passwordResetRequest = (req, res) => {
+    res.json({ message: 'passwordResetRequest' })
+};
+
+const passwordReset = (req, res) => {
+    res.json({ message: 'passwordReset' })
+};
+
+module.exports = { join, login, passwordResetRequest, passwordReset };
