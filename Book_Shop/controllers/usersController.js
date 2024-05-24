@@ -44,11 +44,33 @@ const login = (req, res) => {
 };
 
 const passwordResetRequest = (req, res) => {
-    res.json({ message: 'passwordResetRequest' })
+    const { email } = req.body;
+
+    const sql = `SELECT * FROM users WHERE email = ?`;
+    conn.query(sql, email, (err, result) => {
+        if (err) throw err;
+        if (result.length) {
+            res.status(StatusCodes.OK).json({ email : email });
+        } else {
+            res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Email not found' });
+        }
+    });
 };
 
 const passwordReset = (req, res) => {
-    res.json({ message: 'passwordReset' })
+    const { email, password } = req.body;
+
+    const sql = `UPDATE users SET password = ? WHERE email = ?`;
+    const values = [password, email];
+
+    conn.query(sql, values, (err, result) => {
+        if (err) throw err;
+        if (result.affectedRows) {
+            res.status(StatusCodes.OK).json({ message: 'Password reset success' });
+        } else {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Password reset failed' });
+        }
+    });
 };
 
 module.exports = { join, login, passwordResetRequest, passwordReset };
