@@ -35,9 +35,10 @@ const login = (req, res) => {
                 expiresIn: '1h',
                 issuer: 'BookShop Server'
             });
-            res.status(StatusCodes.OK).json({ message: 'Login success', token: token });
+            res.cookie('token', token, { httpOnly: true });
+            res.status(StatusCodes.OK).json({ message: 'Login success' });
         } else {
-            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Login failed' });
+            res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Login failed' });
         }
     });
 };
