@@ -5,15 +5,40 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 const allBooks = (req, res) => {
-    res.json('전체 도서 조회');
+    const { categoryId } = req.query;
+
+    if (categoryId) {
+        const sql = `SELECT * FROM books WHERE category_id = ?`;
+        conn.query(sql, categoryId, (err, result) => {
+            if (err) throw err;
+            if (result.length) {
+                res.status(StatusCodes.OK).json(result);
+            } else {
+                res.status(StatusCodes.NOT_FOUND).json({ message: 'Category not found' });
+            }
+        });
+    } else {
+            
+            const sql = `SELECT * FROM books`;
+            conn.query(sql, (err, result) => {
+                if (err) throw err;
+                res.status(StatusCodes.OK).json(result);
+            });
+    }
 }
 
 const bookDetail = (req, res) => {
-    res.json('개별 도서 조회');
+    const { id } = req.params;
+
+    const sql = `SELECT * FROM books WHERE id = ?`;
+    conn.query(sql, id, (err, result) => {
+        if (err) throw err;
+        if (result.length) {
+            res.status(StatusCodes.OK).json(result[0]);
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({ message: 'Book not found' });
+        }
+    });
 }
 
-const categoryBooks = (req, res) => {
-    res.json('카테고리별 도서 조회');
-}
-
-module.exports = { allBooks, bookDetail, categoryBooks };
+module.exports = { allBooks, bookDetail };
