@@ -2,21 +2,26 @@ const conn = require('../mariaDB');
 const { StatusCodes } = require('http-status-codes');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { parse } = require('path');
 require('dotenv').config();
 
 const allBooks = (req, res) => {
-    const { categoryId, isNew } = req.query;
+    const { categoryId, isNew, limit, currentPage } = req.query;
+    const offset = (currentPage - 1) * limit;
+
+    let values = [parseInt(limit), offset];
     let sql = `SELECT * FROM books `; // 전체 도서
-    let values = [];
+    
     if (categoryId && isNew) { // 카테고리별 신간
-        sql += `WHERE category_id = ? AND pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW();`
-        values = [categoryId];
+        sql += `WHERE category_id = ? AND pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW()`
+        values.push(categoryId);
     } else if (categoryId) { // 카테고리별 전체 도서
         sql += `WHERE category_id = ?`;
-        values = [categoryId];
+        values.push(categoryId);
     } else if (isNew) { // 전체 신간
-        sql += `WHERE pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW();`
+        sql += `WHERE pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW()`
     }
+    sql += ` LIMIT ? OFFSET ?`;
 
     conn.query(sql, values, (err, result) => {
         if (err) throw err;
