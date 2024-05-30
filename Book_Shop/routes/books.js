@@ -5,6 +5,6 @@ const { allBooks, bookDetail } = require('../controllers/booksController');
 router.use(express.json());
 
 router.get('/', allBooks);
-router.get('/:id', bookDetail);
+router.get('/:bookId', bookDetail);
 
 module.exports = router;
