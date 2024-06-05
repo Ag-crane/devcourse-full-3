@@ -17,8 +17,11 @@ const createOrder = async (req, res) => {
     const orderedBook = items.map(item => [orderId, item.bookId, item.quantity]);
     const orderedBookSql = `INSERT INTO orderedBook (order_id, book_id, quantity) VALUES ?`;
     const [orderedBookResults] = await conn.promise().query(orderedBookSql, [orderedBook]);
-    console.log(orderedBookResults);
 
+    const deleteCartSql = `DELETE FROM cartItems WHERE id IN (?)`;
+    const deleteValues = items.map(item => item.cartItemId);
+    const [deleteCartResults] = await conn.promise().query(deleteCartSql, [deleteValues]);
+    
     res.status(StatusCodes.CREATED).json({ message: '주문 성공' });
 }
 
