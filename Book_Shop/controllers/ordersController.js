@@ -13,15 +13,18 @@ const createOrder = async (req, res) => {
     const orderValues = [firstBook, totalQuantity, totalPrice, userId, deliveryId];
     const [orderResults] = await conn.promise().execute(orderSql, orderValues);
     const orderId = orderResults.insertId;
+    
+    const itemsSql = `select book_id, quantity from cartItems WHERE id IN (?)`;
+    const [orderItems] = await conn.promise().query(itemsSql, [items]);
+    console.log(orderItems)
 
-    const orderedBook = items.map(item => [orderId, item.bookId, item.quantity]);
+    const orderedBook = orderItems.map(item => [orderId, item.book_id, item.quantity]);
     const orderedBookSql = `INSERT INTO orderedBook (order_id, book_id, quantity) VALUES ?`;
     const [orderedBookResults] = await conn.promise().query(orderedBookSql, [orderedBook]);
 
     const deleteCartSql = `DELETE FROM cartItems WHERE id IN (?)`;
-    const deleteValues = items.map(item => item.cartItemId);
-    const [deleteCartResults] = await conn.promise().query(deleteCartSql, [deleteValues]);
-    
+    const [deleteCartResults] = await conn.promise().query(deleteCartSql, [items]);
+
     res.status(StatusCodes.CREATED).json({ message: '주문 성공' });
 }
 
