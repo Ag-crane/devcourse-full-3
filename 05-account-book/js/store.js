@@ -39,7 +39,7 @@ export function initStore() {
     updateStorage();
     storage = sessionStorage.getItem("store");
   }
-  
+
   const { dateList, detailList, todayId, currentFunds, isFirstEdit } =
     JSON.parse(storage);
 
@@ -52,14 +52,15 @@ export function initStore() {
 
 export function addNewHistory(newHistory) {
   try {
-    // TODO:
-    /**
-     * - store의 detailList 새로 갱신
-     * - store.currentFunds 새로 갱신
-     */
-    store.detailList = null;
-    store.currentFunds = null;
+    console.log("newHistory",newHistory);
+    if (store.detailList[store.todayId]){
+      store.detailList[store.todayId].push(newHistory);
+    }else{
+      store.detailList[store.todayId] = [newHistory];
+    }
 
+    store.currentFunds -= newHistory.amount;
+    console.log("store.currentFunds",store.currentFunds);
     updateStorage();
     return true;
   } catch (error) {
