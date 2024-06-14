@@ -37,40 +37,51 @@ export function renderHistoryList() {
   // TODO: 금액 콤마 포맷 맞추기
 
   $sectionHistory.innerHTML = store.dateList
-    .map(({ date, id: dateId }) => {
-      const detail = store.detailList[dateId];
-      if (!detail?.length) return "";
+  .map(({ date, id: dateId }) => {
+    const detail = store.detailList[dateId];
+    if (!detail?.length) return "";
 
-      return `<article class="history-per-day">
-      <p class="history-date">2021년 12월 1일</p>
-      <section class="history-item">
-        <section class="history-item-column">
-          <div class="create-at">10:30</div>
-          <div class="history-detail">
-            <div class="history-detail-row history-detail-title">
-              <p>아이스 아메리카노</p>
+    return `<article class="history-per-day">
+      <p class="history-date">${date}</p>
+      ${detail.map(({ createAt, description, category, amount, fundsAtTheTime, id }) => {
+        const createAtTime = new Date(createAt).toLocaleTimeString("ko-KR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        amount = Number(amount).toLocaleString();
+        fundsAtTheTime = Number(fundsAtTheTime).toLocaleString();
+        return `
+        <section class="history-item">
+          <section class="history-item-column">
+            <div class="create-at">${createAtTime}</div>
+            <div class="history-detail">
+              <div class="history-detail-row history-detail-title">
+                <p>${description}</p>
+              </div>
+              <div class="history-detail-row history-detail-subtitle">
+                <p>${category}</p>
+                <p>
+                  ${amount}
+                  <span>원</span>
+                </p>
+              </div>
             </div>
-            <div class="history-detail-row history-detail-subtitle">
-              <p>카페</p>
-              <p>
-                1000000
-                <span>원</span>
-              </p>
+            <div class="delete-section">
+              <button class="delete-button" data-dateid="${dateId}" data-itemid="${id}">🗑</button>
             </div>
-          </div>
-          <div class="delete-section">
-            <button class="delete-button">🗑</button>
-          </div>
+          </section>
+          <section class="history-item-caption">
+            <p>
+              <span>남은 자산</span>
+              <span>${fundsAtTheTime}</span>
+              <span>원</span>
+            </p>
+          </section>
         </section>
-        <section class="history-item-caption">
-          <p>
-            <span>남은 자산</span>
-            <span>300000</span>
-            <span>원</span>
-          </p>
-        </section>
-      </section>
+        `;
+      }).join("")}
     </article>`;
-    })
-    .join("");
+  })
+  .join("");
+
 }
