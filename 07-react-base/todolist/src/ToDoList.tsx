@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Button from 'react-bootstrap/Button';
 
 type Todo = {
     id: number;
@@ -14,14 +14,30 @@ const ToDoList: React.FC = () => {
         { id: 2, text: '알고리즘 1문제 풀기', isChecked: false },
         { id: 3, text: '운동', isChecked: false },
     ])
+    const [inputText, setInputText] = useState<string>('')
 
     const handleCheck = (id: number) => {
         setTodos((prevTodos) =>
             prevTodos.map((todo) => todo.id === id ? { ...todo, isChecked: !todo.isChecked } : todo))
     }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputText(e.target.value);
+    }
+    
+    const addTodo = () => {
+        if (inputText === '') return;
+        setTodos([...todos, { id: Date.now(), text: inputText, isChecked: false }]);
+        setInputText('');
+    }
+
     return (
         <div>
             <h1 className='title'>{title}</h1>
+            <div>
+                <input type='text' placeholder='할 일 입력' onChange={handleInputChange} />
+                <Button variant="primary" onClick={addTodo}>추가</Button>
+            </div>
             <div className='board'>
                 <ul>
                     {todos.map((todo) => (
