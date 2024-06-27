@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import Clock from './Clock';
 
 type Todo = {
     id: number;
@@ -24,7 +25,7 @@ const ToDoList: React.FC = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value);
     }
-    
+
     const addTodo = () => {
         if (inputText === '') return;
         setTodos([...todos, { id: Date.now(), text: inputText, isChecked: false }]);
@@ -54,6 +55,7 @@ const ToDoList: React.FC = () => {
                     ))}
                 </ul>
             </div>
+            <Clock></Clock>
         </div>
     );
 };
