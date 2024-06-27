@@ -31,6 +31,11 @@ const ToDoList: React.FC = () => {
         setTodos([...todos, { id: Date.now(), text: inputText, isChecked: false }]);
         setInputText('');
     }
+    const deleteTodo = (id: number) => {
+        return () => {
+            setTodos(todos.filter((todo) => todo.id !== id));
+        }
+    }
 
     return (
         <div>
@@ -51,6 +56,7 @@ const ToDoList: React.FC = () => {
                                     todo.isChecked ? <s>{todo.text}</s> : todo.text
                                 }
                             </span>
+                            <button className='button-delete' onClick={deleteTodo(todo.id)}>삭제</button>
                         </li>
                     ))}
                 </ul>

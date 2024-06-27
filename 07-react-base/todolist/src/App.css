@@ -23,3 +23,13 @@
   font-size: 2em;
   margin: 10px 0;
 }
+
+.button-delete{
+  background-color: rgb(15, 28, 87);
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
