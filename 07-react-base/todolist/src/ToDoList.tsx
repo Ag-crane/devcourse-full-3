@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Clock from './Clock';
+import TodoModal from './TodoModal';
 
 type Todo = {
     id: number;
@@ -16,6 +16,8 @@ const ToDoList: React.FC = () => {
         { id: 3, text: '운동', isChecked: false },
     ])
     const [inputText, setInputText] = useState<string>('')
+    const [showDetail, setShowDetail] = useState<boolean>(false)
+    const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
 
     const handleCheck = (id: number) => {
         setTodos((prevTodos) =>
@@ -36,6 +38,14 @@ const ToDoList: React.FC = () => {
             setTodos(todos.filter((todo) => todo.id !== id));
         }
     }
+    const handleClickTodo = (todo: Todo) => {
+        setShowDetail(true);
+        setSelectedTodo(todo);
+    }
+    
+    const handleCloseDetail = () => {
+        setShowDetail(false);
+    }
 
     return (
         <div>
@@ -51,7 +61,7 @@ const ToDoList: React.FC = () => {
                             <input type='checkbox' onChange={() => {
                                 handleCheck(todo.id);
                             }} />
-                            <span>
+                            <span onClick={()=>{handleClickTodo(todo)}}>
                                 {
                                     todo.isChecked ? <s>{todo.text}</s> : todo.text
                                 }
@@ -61,7 +71,7 @@ const ToDoList: React.FC = () => {
                     ))}
                 </ul>
             </div>
-            <Clock></Clock>
+            {showDetail && <TodoModal show={showDetail} todo={selectedTodo} onClose={handleCloseDetail} />}
         </div>
     );
 };
