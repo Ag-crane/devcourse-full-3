@@ -1,5 +1,6 @@
 import React, { FC, useState } from "react";
 import { FiCheck } from "react-icons/fi";
+import { sideForm, input, icon } from "./SideForm.css";
 
 type TsideFormProps = {
     setIsFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,8 +17,9 @@ const SideForm: FC<TsideFormProps> = ({ setIsFormOpen }) => {
     };
     
     return (
-        <div>
+        <div className={sideForm}>
             <input
+                className={input}
                 autoFocus
                 type="text"
                 placeholder="새로운 게시판 등록하기"
@@ -25,7 +27,7 @@ const SideForm: FC<TsideFormProps> = ({ setIsFormOpen }) => {
                 onChange={handleChange}
                 onBlur={handleOnBlur}
             />
-            <FiCheck />
+            <FiCheck className={icon}/>
         </div>
     );
 };
