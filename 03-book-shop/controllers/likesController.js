@@ -1,16 +1,21 @@
 const conn = require('../mariaDB');
 const { StatusCodes } = require('http-status-codes');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const addLike = (req, res) => {
     const { userId, bookId } = req.params;
-    console.log(userId, bookId);
-    console.log(req.params)
-    const sql = `INSERT INTO likes (user_id, liked_book_id) VALUES (?, ?)`;
-    const values = [userId, bookId];
-    conn.query(sql, values, (err, result) => {
-        if (err) throw err;
-        res.status(StatusCodes.CREATED).json({ message: 'Successfully added' });
-    });
+    
+    const token = req.headers.authorization;
+    console.log(token)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
+    // const sql = `INSERT INTO likes (user_id, liked_book_id) VALUES (?, ?)`;
+    // const values = [userId, bookId];
+    // conn.query(sql, values, (err, result) => {
+    //     if (err) throw err;
+    //     res.status(StatusCodes.CREATED).json({ message: 'Successfully added' });
+    // });
 }
 
 const removeLike = (req, res) => {
