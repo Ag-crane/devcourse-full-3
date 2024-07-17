@@ -33,7 +33,7 @@ export const BookStoreThemeProvider = ({children}: {children: React.ReactNode}) 
 
     return (
         <ThemeContext.Provider value={{themeName, toggleTheme}}>
-            <ThemeProvider theme={getTheme}>
+            <ThemeProvider theme={getTheme(themeName)}>
             <GlobalStyle themeName={themeName} />
             {children}
             </ThemeProvider>
