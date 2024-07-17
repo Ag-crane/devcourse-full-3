@@ -1,5 +1,5 @@
 export type ThemeName = "light" | "dark";
-export type ColorKey = "primary" | "background" | "secondary" | "third";
+export type ColorKey = "primary" | "background" | "secondary" | "third" | "border" | "text";
 
 interface Theme {
     name: ThemeName;
@@ -37,6 +37,8 @@ export const light: Theme = {
         background: "lightgray",
         secondary: "blue",
         third: "green",
+        border: "gray",
+        text: "black",
     },
     heading: {
         small: {
@@ -86,6 +88,8 @@ export const dark: Theme = {
         background: "midnightblue",
         secondary: "darkblue",
         third: "darkgreen",
+        border: "gray",
+        text: "white",
     },
 };
 
