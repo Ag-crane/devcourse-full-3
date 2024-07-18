@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { getTheme, ThemeName } from "../style/theme";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyle } from "../style/global";
+import ThemeSwitcher from "../components/header/ThemeSwitcher";
 
 const DEFAULT_THEME = "light";
 const THEME_LOCAL_STORAGE_KEY = "theme";
@@ -34,6 +35,7 @@ export const BookStoreThemeProvider = ({children}: {children: React.ReactNode}) 
     return (
         <ThemeContext.Provider value={{themeName, toggleTheme}}>
             <ThemeProvider theme={getTheme(themeName)}>
+            <ThemeSwitcher/>
             <GlobalStyle themeName={themeName} />
             {children}
             </ThemeProvider>
