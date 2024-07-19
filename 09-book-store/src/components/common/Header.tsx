@@ -2,22 +2,21 @@ import { styled } from "styled-components";
 import logo from "../../assets/images/logo.png";
 import { FaSignInAlt, FaRegUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
-const CATEGORY = [
-    { id: null, name: "전체" },
-    { id: 0, name: "동화" },
-    { id: 1, name: "소설" },
-    { id: 2, name: "사회" },
-];
+import { useCategory } from "../../hooks/useCategory";
 
 function Header() {
+    const { category } = useCategory();
+    
     return (
         <HeaderStyle>
             <h1 className="logo">
-                <Link to='/'><img src={logo} alt="book store"></img></Link>
+                <Link to="/">
+                    <img src={logo} alt="book store"></img>
+                </Link>
             </h1>
             <nav className="category">
                 <ul>
-                    {CATEGORY.map((item) => (
+                    {category.map((item) => (
                         <li key={item.id}>
                             <Link
                                 to={
@@ -26,7 +25,7 @@ function Header() {
                                         : `/books/?cLinktegory_id=${item.id}`
                                 }
                             >
-                                {item.name}
+                                {item.category_name}
                             </Link>
                         </li>
                     ))}
@@ -35,13 +34,18 @@ function Header() {
             <nav className="auth">
                 <ul>
                     <li>
-                        <Link to="/login"><FaSignInAlt/>로그인</Link>
+                        <Link to="/login">
+                            <FaSignInAlt />
+                            로그인
+                        </Link>
                     </li>
                     <li>
-                        <Link to="/signup"><FaRegUser/>회원가입</Link>
+                        <Link to="/signup">
+                            <FaRegUser />
+                            회원가입
+                        </Link>
                     </li>
                 </ul>
-
             </nav>
         </HeaderStyle>
     );
@@ -58,13 +62,13 @@ const HeaderStyle = styled.header`
     border-bottom: 1px solid ${({ theme }) => theme.color.background};
 
     .logo {
-        img{
+        img {
             width: 200px;
         }
     }
 
     .category {
-        ul{
+        ul {
             display: flex;
             gap: 32px;
             li {
@@ -73,7 +77,7 @@ const HeaderStyle = styled.header`
                     font-weight: 600;
                     text-decoration: none;
                     color: ${({ theme }) => theme.color.text};
-                
+
                     &:hover {
                         color: ${({ theme }) => theme.color.primary};
                     }
@@ -94,7 +98,7 @@ const HeaderStyle = styled.header`
                     display: flex;
                     align-items: center;
                     line-height: 1;
-                    
+
                     svg {
                         margin-right: 6px;
                     }
