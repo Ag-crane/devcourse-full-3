@@ -3,10 +3,12 @@ import logo from "../../assets/images/logo.png";
 import { FaSignInAlt, FaRegUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useCategory } from "../../hooks/useCategory";
+import { useAuthStore } from "../../store/authStore";
 
 function Header() {
     const { category } = useCategory();
-    
+    const { isLoggedIn, storeLogout } = useAuthStore();
+
     return (
         <HeaderStyle>
             <h1 className="logo">
@@ -32,6 +34,13 @@ function Header() {
                 </ul>
             </nav>
             <nav className="auth">
+                {isLoggedIn && (
+                    <ul>
+                        <li><Link to="/cart">장바구니</Link></li>
+                        <li><Link to="/orderList">주문 내역</Link></li>
+                        <li><button onClick={storeLogout}>로그아웃</button></li>
+                    </ul>
+                )}
                 <ul>
                     <li>
                         <Link to="/login">
@@ -91,14 +100,16 @@ const HeaderStyle = styled.header`
             display: flex;
             gap: 16px;
             li {
-                a {
+                a, button {
                     font-size: 1rem;
                     font-weight: 600;
                     text-decoration: none;
                     display: flex;
                     align-items: center;
                     line-height: 1;
-
+                    background: none;
+                    border: none;
+                    cursor: pointer;
                     svg {
                         margin-right: 6px;
                     }

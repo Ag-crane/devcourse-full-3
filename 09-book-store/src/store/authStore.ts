@@ -6,7 +6,7 @@ interface StoreState {
     storeLogout: () => void; // 액션
 }
 
-const getToken = () => {
+export const getToken = () => {
     return localStorage.getItem("token"); // 없으면 null
 };
 
@@ -14,7 +14,7 @@ const setToken = (token: string) => {
     localStorage.setItem("token", token);
 };
 
-const removeToken = () => {
+export const removeToken = () => {
     localStorage.removeItem("token");
 }
 

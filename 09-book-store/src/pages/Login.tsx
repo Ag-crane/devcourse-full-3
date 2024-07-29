@@ -30,7 +30,9 @@ function Login() {
             storeLogin(response.token);
             showAlert("로그인 성공");
             navigate("/");
-        })
+        }, (error) => {
+            showAlert("로그인 실패");
+        });
     };
 
     return (
