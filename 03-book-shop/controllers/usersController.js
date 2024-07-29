@@ -43,7 +43,7 @@ const login = (req, res) => {
                     issuer: 'BookShop Server'
                 });
                 res.cookie('token', token, { httpOnly: true });
-                res.status(StatusCodes.OK).json({ message: 'Login success' });
+                res.status(StatusCodes.OK).json({ message: 'Login success', token: token });
             } else {
                 res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Login failed' });
             }
