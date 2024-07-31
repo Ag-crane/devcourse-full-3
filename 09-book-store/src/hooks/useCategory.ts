@@ -46,7 +46,7 @@ export const useCategory = () => {
 
     useEffect(() => {
         setActive();
-    }, [location.search]);
+    }, [location.search, setActive]);
 
     return { category };
 };
