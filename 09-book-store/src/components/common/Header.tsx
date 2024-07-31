@@ -27,7 +27,7 @@ function Header() {
                                         : `/books/?cLinktegory_id=${item.id}`
                                 }
                             >
-                                {item.category_name}
+                                {item.name}
                             </Link>
                         </li>
                     ))}
